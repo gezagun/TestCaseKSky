@@ -26,6 +26,9 @@ class TreatmentCase(models.Model):
     RESULTS = [(Helped, 'Помогло'), (Useless, 'Не помогло')]
     result = models.CharField(max_length=11, choices=RESULTS, default=None, null=True)
 
+    def __str__(self):
+        return 'лечение ' + str(self.patient)
+
 
 class MedDocument(models.Model):
     """Медицинский документ"""
@@ -35,6 +38,9 @@ class MedDocument(models.Model):
                                        null=True)
     header = models.CharField(max_length=200, verbose_name='Заголовок', null=False)
     date = models.DateField(auto_now_add=True, verbose_name='Дата документа')
+
+    def __str__(self):
+        return str(self.patient) + ' ' + self.header
 
 
 class DocumentBody(models.Model):
