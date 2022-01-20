@@ -3,8 +3,8 @@ from rest_framework.mixins import ListModelMixin, CreateModelMixin
 from django.http import Http404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Patient, TreatmentCase
-from .serializers import PatientSerializer, TreatmentCaseSerializer
+from .models import Patient, TreatmentCase, MedDocument, DocumentBody
+from .serializers import PatientSerializer, TreatmentCaseSerializer, DocumentBodySerializer
 
 
 class PatientList(APIView):
@@ -65,20 +65,20 @@ class TreatmentsCaseList(generics.GenericAPIView, CreateModelMixin, ListModelMix
         return self.create(request)
 
 
-class TreatmentCaseList(APIView):
-    """Просмотр всех случаев лечения на одной странице (пагинация не предусмотрена)"""
-
-    def get(self, request):
-        treatment_cases = TreatmentCase.objects.all()
-        serializer = TreatmentCaseSerializer(treatment_cases, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        serializer = TreatmentCaseSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+# class TreatmentCaseList(APIView):
+#     """Просмотр всех случаев лечения на одной странице (пагинация не предусмотрена)"""
+#
+#     def get(self, request):
+#         treatment_cases = TreatmentCase.objects.all()
+#         serializer = TreatmentCaseSerializer(treatment_cases, many=True)
+#         return Response(serializer.data)
+#
+#     def post(self, request):
+#         serializer = TreatmentCaseSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class TreatmentCaseView(APIView):
@@ -102,3 +102,18 @@ class TreatmentCaseView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DocumentBodyView(generics.GenericAPIView, CreateModelMixin, ListModelMixin):
+
+    serializer_class = DocumentBodySerializer
+
+    def get_queryset(self):
+        queryset = DocumentBody.objects.all()
+        return queryset
+
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request, format=None):
+        return self.create(request)

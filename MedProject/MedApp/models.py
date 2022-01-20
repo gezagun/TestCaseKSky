@@ -35,12 +35,12 @@ class MedDocument(models.Model):
 
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE, verbose_name='Пациент', null=False)
     treatment_case = models.ForeignKey(TreatmentCase, on_delete=models.CASCADE, verbose_name='Случай лечения',
-                                       null=True)
+                                       null=True, blank=True, related_name='documents')
     header = models.CharField(max_length=200, verbose_name='Заголовок', null=False)
     date = models.DateField(auto_now_add=True, verbose_name='Дата документа')
 
     def __str__(self):
-        return str(self.patient) + ' ' + self.header
+        return self.header
 
 
 class DocumentBody(models.Model):
@@ -49,3 +49,5 @@ class DocumentBody(models.Model):
     document = models.OneToOneField(MedDocument, on_delete=models.CASCADE, null=False, verbose_name='Документ')
     content = models.JSONField(verbose_name='Содержание документа')
 
+    def __str__(self):
+        return self.document
